@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Configures a fresh Ubuntu machine with Nginx, serving "Holberton School"
+# on port 80, redirecting /redirect_me with a 301, and a custom 404 page.
+
+# Update package lists and install nginx (non-interactive)
+apt-get update -y
+apt-get install -y nginx
+
+# Create the default index page with the required content
+echo "Holberton School" > /var/www/html/index.html
+
+# Add a redirect for /redirect_me using a 301 Moved Permanently
+sed -i '/listen 80 default_server;/a\\tlocation /redirect_me { return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4; }' /etc/nginx/sites-available/default
+
+# Create the custom 404 page
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+
+# Configure Nginx to use the custom 404 page
+sed -i '/listen 80 default_server;/a\\terror_page 404 /404.html;' /etc/nginx/sites-available/default
+
+service nginx restart
